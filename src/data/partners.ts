@@ -28,9 +28,7 @@ export const createPartnerData = {
 };
 
 export const getPartnerByIdData = {
-  nonExistingRequest: {
-    id: "non-existing-id-999999",
-  },
+  nonExistingId: "non-existing-id-999999",
 };
 
 export const updatePartnerData = {
