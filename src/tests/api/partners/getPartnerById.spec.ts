@@ -2,7 +2,7 @@ import { test, expect, APIResponse } from '@playwright/test';
 import { PartnersService } from '../../../services/partners.service';
 import { getPartnerByIdData } from '../../../data/partners';
 
-test.describe("Create Partner", () => {
+test.describe("Get Partner By ID", () => {
   let partnersService: PartnersService;
 
   test.beforeEach(async ({ request }) => {

@@ -2,7 +2,7 @@ import { test, expect, APIResponse } from '@playwright/test';
 import { PartnersService } from '../../../services/partners.service';
 import { getAllPartnersData } from '../../../data/partners';
 
-test.describe("Create Partner", async () => {
+test.describe("Get All Partners", async () => {
   let partnersService: PartnersService;
 
   test.beforeEach(async ({ request }) => {
@@ -31,7 +31,7 @@ test.describe("Create Partner", async () => {
           expectedFields.forEach((field) => {expect(partner).toHaveProperty(field);});
         });
     });
-    
+
   });
 
 
