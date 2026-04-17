@@ -28,7 +28,11 @@ export const createPartnerData = {
 };
 
 export const getPartnerByIdData = {
-  nonExistingId: "non-existing-id-999999",
+  existingPartner: {
+    id: "1a2b3c4d-0001",
+    expectedName: "Tech Solutions S.A.S", 
+  },
+  nonExistingId: "non-existing-id-999999"
 };
 
 export const updatePartnerData = {

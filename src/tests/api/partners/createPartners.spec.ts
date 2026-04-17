@@ -41,6 +41,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
+      expect(response.body.message).toContain("Partner name is required");
     });
 
   });
@@ -55,6 +56,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
+      expect(response.body.message).toContain("Partner name is required");
     });
 
   });
@@ -69,6 +71,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
+      expect(response.body.message).toContain("Partner name is required");
     });
 
   });
@@ -83,6 +86,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
+      expect(response.body.message).toContain("Partner name is required");
     });
 
   });
