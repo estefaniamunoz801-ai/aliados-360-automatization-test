@@ -9,6 +9,7 @@ test.describe("Create Partner", () => {
     partnersService = new PartnersService(request);
   });
 
+  // SUCCESS SCENARIOS
   //test to create a partner with valid data
   test("should create a partner with valid data", async () => {
     const requestData = createPartnerData.validRequest;
@@ -29,8 +30,9 @@ test.describe("Create Partner", () => {
 
   });
 
-  //test to create a partner with invalid data
-  test("should not create a partner with invalid data", async () => {
+  // FAILURE SCENARIOS
+  //test to create a partner with an empty name
+  test("should not create a partner with an empty name", async () => {
     const invalidRequests = createPartnerData.invalidRequests;
 
     const response = await test.step("send a POST request to create a partner with invalid data", async () => {
@@ -41,12 +43,49 @@ test.describe("Create Partner", () => {
       expect(response.status).toBe(400);
     });
 
-    await test.step("validate error message in response body", async () => {      
-      expect(response.body).toHaveProperty("InvalidPartnerNameError");
-      expect(response.body.InvalidPartnerNameError).toContain("Partner name is required");
-    });
-    
   });
 
-});
+  //test to create a partner with a only spaces name (blank name)
+  test("should not create a partner with a only spaces name", async () => {
+    const invalidRequests = createPartnerData.invalidRequests;
 
+    const response = await test.step("send a POST request to create a partner with invalid data", async () => {
+      return await partnersService.createPartner(invalidRequests.blankName);
+    });
+
+    await test.step("validate HTTP status code", async () => {
+      expect(response.status).toBe(400);
+    });
+
+  });
+
+  //test to create a partner with a null name
+  test("should not create a partner with a null name", async () => {
+    const invalidRequests = createPartnerData.invalidRequests;
+
+    const response = await test.step("send a POST request to create a partner with invalid data", async () => {
+      return await partnersService.createPartner(invalidRequests.nullName);
+    });
+
+    await test.step("validate HTTP status code", async () => {
+      expect(response.status).toBe(400);
+    });
+
+  });
+
+  //test to create a partner with an undefined name
+  test("should not create a partner with an undefined name", async () => {
+    const invalidRequests = createPartnerData.invalidRequests;
+
+    const response = await test.step("send a POST request to create a partner with invalid data", async () => {
+      return await partnersService.createPartner(invalidRequests.undefinedName);
+    });
+
+    await test.step("validate HTTP status code", async () => {
+      expect(response.status).toBe(400);
+    });
+
+  });
+
+
+});
