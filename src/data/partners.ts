@@ -35,6 +35,11 @@ export const getPartnerByIdData = {
   nonExistingId: "non-existing-id-999999"
 };
 
+export const getAllPartnersData = {
+  // Podrías definir propiedades que esperas que existan en cada objeto de la lista
+  expectedFields: ["id", "name", "active"],
+};
+
 export const updatePartnerData = {
   validRequests: {
     updateName: {
