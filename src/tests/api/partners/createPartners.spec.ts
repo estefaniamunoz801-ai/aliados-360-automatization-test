@@ -27,7 +27,6 @@ test.describe("Create Partner", () => {
       expect(response.body.name).toBe(requestData.name);
       expect(response.body.active).toBe(true);
     });
-
   });
 
   // FAILURE SCENARIOS
@@ -41,7 +40,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Partner name is required");
+      expect(response.body.error.fieldErrors.name).toContain("Name must have at least 3 characters");
     });
 
   });
@@ -71,7 +70,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Partner name is required");
+      expect(response.body.error.fieldErrors.name).toContain("Invalid input: expected string, received null");
     });
 
   });
@@ -86,10 +85,7 @@ test.describe("Create Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Partner name is required");
+      expect(response.body.error.fieldErrors.name).toContain("Invalid input: expected string, received undefined");
     });
-
   });
-
-
 });

@@ -31,8 +31,5 @@ test.describe("Get All Partners", async () => {
           expectedFields.forEach((field) => {expect(partner).toHaveProperty(field);});
         });
     });
-
   });
-
-
 });

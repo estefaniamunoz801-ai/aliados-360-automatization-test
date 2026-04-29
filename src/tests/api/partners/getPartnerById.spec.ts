@@ -22,7 +22,6 @@ test.describe("Get Partner By ID", () => {
       expect(response.status).toBe(200);
       expect(response.body.name).toBe(existingPartner.expectedName);
     });
-
   });
 
 
@@ -39,8 +38,5 @@ test.describe("Get Partner By ID", () => {
       expect(response.status).toBe(404);
       expect(response.body.message).toContain("Partner not found");
     });
-
   });
-
-
 });
