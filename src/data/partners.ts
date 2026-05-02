@@ -19,10 +19,10 @@ export const createPartnerData = {
       name: "   ",
     },
     nullName: {
-      name: null as unknown as string,
+      name: null as any,
     },
     undefinedName: {
-      name: undefined as unknown as string,
+      name: undefined as any,
     },
   },
 };
@@ -52,10 +52,11 @@ export const updatePartnerData = {
       name: partnerNames.updated,
       active: false,
     },
+    updateWithEmptyBody: {},
   },
   invalidRequests: {
-    nonExistingId: "non-existing-id-999999",
-    emptyBody: {},
+    invalidId: "non-existing-id-999999",
+    nonExistingId: "1a2b3c4d-9999",
     emptyName: {
       name: "",
     },
@@ -66,10 +67,10 @@ export const updatePartnerData = {
       name: "ab",
     },
     invalidNameType: {
-      name: 123 as unknown as string,
+      name: 123 as any,
     },
     invalidActiveType: {
-      active: "true" as unknown as boolean,
+      active: "true" as any,
     },
   },
 };

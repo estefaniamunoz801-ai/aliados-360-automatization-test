@@ -1,4 +1,4 @@
-import { test, expect, APIResponse } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { PartnersService } from '../../../services/partners.service';
 import { updatePartnerData } from '../../../data/partners';
 
@@ -10,6 +10,30 @@ test.describe("Update Partner", () => {
   });
 
   // SUCCESS SCENARIOS
+  //test to update a partner with an empty body
+  test("should 'update' a partner with an empty body", async () => {
+    const targetId = updatePartnerData.targetId;
+    const requestData = updatePartnerData.validRequests.updateWithEmptyBody;
+
+    const response = await test.step("send a PATCH request to update a partner with an empty body", async () => {
+      return await partnersService.updatePartner(targetId, requestData);
+    });
+
+    await test.step("validate no changes in partner", async () => {
+      const initial = await partnersService.getPartnerById(targetId)
+
+      expect(response.body).toEqual({
+        id: initial.body.id,
+        name: initial.body.name,
+        active: initial.body.active
+      });
+    });
+
+    await test.step("validate HTTP status code", async () => {
+      expect(response.status).toBe(200);
+    });
+  });
+
   //test to update only the name of a partner with valid data
   test("should update only the name of a partner with valid data", async () => {
     const targetId = updatePartnerData.targetId;
@@ -20,13 +44,19 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
     });
 
-   });
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        id: updatePartnerData.targetId,
+        name: updatePartnerData.validRequests.updateName.name,
+      });
+    });
+  });
 
-   //test to update only the active status of a partner with valid data
-   test("should update only the active status of a partner with valid data", async () => {
+  //test to update only the active status of a partner with valid data
+  test("should update only the active status of a partner with valid data", async () => {
     const targetId = updatePartnerData.targetId;
     const requestData = updatePartnerData.validRequests.updateActive;
 
@@ -35,13 +65,19 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
     });
 
-   });
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        id: updatePartnerData.targetId,
+        active: false,
+      });
+    });
+  });
 
-   //test to update both the name and active status of a partner with valid data
-   test("should update both the name and active status of a partner with valid data", async () => {
+  //test to update both the name and active status of a partner with valid data
+  test("should update both the name and active status of a partner with valid data", async () => {
     const targetId = updatePartnerData.targetId;
     const requestData = updatePartnerData.validRequests.updateNameAndActive;
 
@@ -50,12 +86,29 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(204);
+      expect(response.status).toBe(200);
     });
-
-   });
+  });
 
   // FAILURE SCENARIOS
+  //test to update a partner with an invalid id
+  test("should not process an invalid id", async () => {
+    const invalidId = updatePartnerData.invalidRequests.invalidId;
+    const requestData = updatePartnerData.validRequests.updateName;
+
+    const response = await test.step("send a PATCH request to update a partner with a non-existing id", async () => {
+      return await partnersService.updatePartner(invalidId, requestData);
+    });
+
+    await test.step("validate HTTP status code", async () => {
+      expect(response.status).toBe(422);
+    });
+
+    await test.step("validate response", async () => {
+      expect(response.body.message).toContain("Invalid params");
+    });
+  });
+
   //test to update a partner with a non-existing id
   test("should not update a partner with a non-existing id", async () => {
     const nonExistingId = updatePartnerData.invalidRequests.nonExistingId;
@@ -67,25 +120,11 @@ test.describe("Update Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(404);
+    });
+
+    await test.step("validate response", async () => {
       expect(response.body.message).toContain("Partner not found");
     });
-
-  });
-
-  //test to update a partner with an empty body
-  test("should not update a partner with an empty body", async () => {
-    const targetId = updatePartnerData.targetId;
-    const requestData = updatePartnerData.invalidRequests.emptyBody;
-
-    const response = await test.step("send a PATCH request to update a partner with an empty body", async () => {
-      return await partnersService.updatePartner(targetId, requestData);
-    });
-
-    await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain("At least one field must be provided to update");
-    });
-
   });
 
   //test to update a partner with an empty name
@@ -98,10 +137,16 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Name cannot be empty");
+      expect(response.status).toBe(422);
     });
 
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Invalid body",
+      });
+      expect(response.body.errors).toBeDefined();
+    });
   });
 
   //test to update a partner with a only spaces name (blank name)
@@ -115,25 +160,33 @@ test.describe("Update Partner", () => {
 
     await test.step("validate HTTP status code", async () => {
       expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Name cannot be empty");
     });
 
+    await test.step("validate response", async () => {
+      expect(response.body.message).toContain("Partner name is required");
+    });
   });
 
-  //test to update a partner with a ivalid name (too short)
-  test("should not update a partner with a ivalid name", async () => {
+  //test to update a partner with an invalid name (too short)
+  test("should not update a partner with an invalid name", async () => {
     const targetId = updatePartnerData.targetId;
     const requestData = updatePartnerData.invalidRequests.shortName;
 
-    const response = await test.step("send a PATCH request to update a partner with a ivalid name", async () => {
+    const response = await test.step("send a PATCH request to update a partner with an invalid name", async () => {
       return await partnersService.updatePartner(targetId, requestData);
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Name must be at least 3 characters");
+      expect(response.status).toBe(422);
     });
 
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Invalid body",
+      });
+      expect(response.body.errors).toBeDefined();
+    });
   });
 
   //test to update a partner with a invalid name type
@@ -146,14 +199,20 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Name must be a string");
+      expect(response.status).toBe(422);
     });
 
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Invalid body",
+      });
+      expect(response.body.errors).toBeDefined();
+    });
   });
 
   //test to update a partner with a invalid active type
-  test("should not update a partner with a invalid active type", async () => {
+  test("should not update a partner with an invalid active type", async () => {
     const targetId = updatePartnerData.targetId;
     const requestData = updatePartnerData.invalidRequests.invalidActiveType;
 
@@ -162,10 +221,15 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(400);
-      expect(response.body.message).toContain("Active must be a boolean");
+      expect(response.status).toBe(422);
     });
 
+    await test.step("validate response", async () => {
+      expect(response.body).toMatchObject({
+        code: "VALIDATION_ERROR",
+        message: "Invalid body",
+      });
+      expect(response.body.errors).toBeDefined();
+    });
   });
-
-});
+})

@@ -19,7 +19,7 @@ export class PartnersService {
   }
 
   async updatePartner(id: string, data: { name?: string; active?: boolean }) {
-    const response = await this.request.put(`partners/${id}`, {
+    const response = await this.request.patch(`partners/${id}`, {
       data,
     });
     return this.parseResponse(response);
