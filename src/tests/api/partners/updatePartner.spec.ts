@@ -101,11 +101,11 @@ test.describe("Update Partner", () => {
     });
 
     await test.step("validate HTTP status code", async () => {
-      expect(response.status).toBe(422);
+      expect(response.status).toBe(404);
     });
 
     await test.step("validate response", async () => {
-      expect(response.body.message).toContain("Invalid params");
+      expect(response.body.message).toContain("Partner not found");
     });
   });
 
